@@ -137,7 +137,7 @@ namespace netDxf.IO
             DxfVersion version = DxfDocument.CheckDxfFileVersion(stream, out this.isBinary);
             stream.Position = startPosition;
 
-            if(version<DxfVersion.AutoCad2000)
+            if(version<DxfVersion.AutoCad14)
                 throw new DxfVersionNotSupportedException(string.Format("DXF file version not supported : {0}.", version), version);
 
             string dwgcodepage = CheckHeaderVariable(stream, HeaderVariableCode.DwgCodePage, out this.isBinary);
@@ -376,9 +376,9 @@ namespace netDxf.IO
             return null;
         }
 
-        #endregion
+#endregion
 
-        #region sections methods
+#region sections methods
 
         private void ReadHeader()
         {
@@ -396,8 +396,8 @@ namespace netDxf.IO
                     case HeaderVariableCode.AcadVer:
                         string version = this.chunk.ReadString();
                         DxfVersion acadVer = StringEnum<DxfVersion>.Parse(version, StringComparison.OrdinalIgnoreCase);
-                        if (acadVer < DxfVersion.AutoCad2000)
-                            throw new NotSupportedException("Only AutoCad2000 and higher DXF versions are supported.");
+                        if (acadVer < DxfVersion.AutoCad14)
+                            throw new NotSupportedException("Only AutoCad14 and higher DXF versions are supported.");
                         this.doc.DrawingVariables.AcadVer = acadVer;
                         this.chunk.Next();
                         break;
@@ -1085,9 +1085,9 @@ namespace netDxf.IO
             }
         }
 
-        #endregion
+#endregion
 
-        #region table methods
+#region table methods
 
         private void ReadTable()
         {
@@ -2970,9 +2970,9 @@ namespace netDxf.IO
             while (this.chunk.Code != 0);
         }
 
-        #endregion
+#endregion
 
-        #region block methods
+#region block methods
 
         private Block ReadBlock()
         {
@@ -3546,9 +3546,9 @@ namespace netDxf.IO
             return attribute;
         }
 
-        #endregion
+#endregion
 
-        #region entity methods
+#region entity methods
 
         private DxfObject ReadEntity(bool isBlockEntity)
         {
@@ -9120,9 +9120,9 @@ namespace netDxf.IO
             }
         }
 
-        #endregion
+#endregion
 
-        #region object methods
+#region object methods
 
         private void CreateObjectCollection(DictionaryObject namedDict)
         {
@@ -10082,9 +10082,9 @@ namespace netDxf.IO
             return underlayDef;
         }
 
-        #endregion
+#endregion
 
-        #region private methods
+#region private methods
 
         private void PostProcesses()
         {           
@@ -10591,6 +10591,6 @@ namespace netDxf.IO
             return this.doc.MlineStyles.Add(new MLineStyle(name));
         }
 
-        #endregion
+#endregion
     }
 }

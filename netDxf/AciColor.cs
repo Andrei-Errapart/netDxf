@@ -490,9 +490,9 @@ namespace netDxf
             this.index = index;
         }
 
-        #endregion
+#endregion
 
-        #region public properties
+#region public properties
 
         /// <summary>
         /// Defines if the color is defined by layer.
@@ -571,9 +571,9 @@ namespace netDxf
             }
         }
 
-        #endregion
+#endregion
 
-        #region public methods
+#region public methods
 
         /// <summary>
         /// Converts HSL (hue, saturation, lightness) value to an <see cref="AciColor">AciColor</see>.
@@ -776,9 +776,9 @@ namespace netDxf
             return new AciColor(index);
         }
 
-        #endregion
+#endregion
 
-        #region overrides
+#region overrides
 
         /// <summary>
         /// Converts the value of this instance to its equivalent string representation.
@@ -796,9 +796,9 @@ namespace netDxf
             return this.index.ToString(CultureInfo.CurrentCulture);
         }
 
-        #endregion
+#endregion
 
-        #region implements ICloneable
+#region implements ICloneable
 
         /// <summary>
         /// Creates a new color that is a copy of the current instance.
@@ -818,9 +818,9 @@ namespace netDxf
             return color;
         }
 
-        #endregion
+#endregion
 
-        #region implements IEquatable
+#region implements IEquatable
 
         /// <summary>
         /// Check if the components of two colors are equal.
@@ -835,9 +835,9 @@ namespace netDxf
             return (other.r == this.r) && (other.g == this.g) && (other.b == this.b);
         }
 
-        #endregion
+#endregion
 
-        #region private methods
+#region private methods
 
         /// <summary>
         /// Obtains the approximate color index from the RGB components.
@@ -865,6 +865,6 @@ namespace netDxf
             return index;
         }
 
-        #endregion
+#endregion
     }
 }

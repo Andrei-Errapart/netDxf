@@ -3578,6 +3578,18 @@ namespace netDxf.IO
                         handle = this.chunk.ReadHex();
                         this.chunk.Next();
                         break;
+                    case 8: //layer code
+                        // This happens in AutoCad 14 files.
+                        string layerName = this.DecodeEncodedNonAsciiCharacters(this.chunk.ReadString());
+                        layer = this.GetLayer(layerName);
+                        this.chunk.Next();
+                        break;
+                    case 62:
+                        // This happens in AutoCad 14 files.
+                        if (!color.UseTrueColor)
+                            color = AciColor.FromCadIndex(this.chunk.ReadShort());
+                        this.chunk.Next();
+                        break;
                     case 102:
                         this.ReadExtensionDictionaryGroup();
                         this.chunk.Next();
@@ -3585,6 +3597,11 @@ namespace netDxf.IO
                     case 330:
                         owner = this.chunk.ReadHex();
                         if (owner == "0") owner = null;
+                        this.chunk.Next();
+                        break;
+                    case 420: // the entity uses true color
+                        // This happens in AutoCad 14 files.
+                        color = AciColor.FromTrueColor(this.chunk.ReadInt());
                         this.chunk.Next();
                         break;
                     default:
@@ -7489,7 +7506,7 @@ namespace netDxf.IO
                 StartPoint = start,
                 EndPoint = end,
                 Normal = normal,
-                Thickness = thickness
+                Thickness = thickness,
             };
 
             entity.XData.AddRange(xData);

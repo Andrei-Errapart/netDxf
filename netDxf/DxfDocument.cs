@@ -820,8 +820,7 @@ namespace netDxf
         /// <exception cref="DxfVersionNotSupportedException"></exception>
         /// <remarks>
         /// Loading DXF files prior to AutoCad 2000 is not supported.<br />
-        /// The Load method will still raise an exception if they are unable to create the FileStream.<br />
-        /// On Debug mode it will raise any exception that might occur during the whole process.
+        /// Errors are reported through exceptions. <br />
         /// </remarks>
         public static DxfDocument Load(string file)
         {
@@ -837,41 +836,17 @@ namespace netDxf
         /// <exception cref="DxfVersionNotSupportedException"></exception>
         /// <remarks>
         /// Loading DXF files prior to AutoCad 2000 is not supported.<br />
-        /// The Load method will still raise an exception if they are unable to create the FileStream.<br />
-        /// On Debug mode it will raise any exception that might occur during the whole process.
+        /// Errors are reported through exceptions. <br />
         /// </remarks>
         public static DxfDocument Load(string file, IEnumerable<string> supportFolders)
-        {            
-
-            Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-
-            DxfReader dxfReader = new DxfReader();
-
-#if DEBUG
-            DxfDocument document = dxfReader.Read(stream, supportFolders);
-            stream.Close();
-#else
-            DxfDocument document;
-            try
+        {
+            using (var stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                document = dxfReader.Read(stream, supportFolders);
+                DxfReader dxfReader = new DxfReader();
+                DxfDocument document = dxfReader.Read(stream, supportFolders);
+                document.name = Path.GetFileNameWithoutExtension(file);
+                return document;
             }
-            catch (DxfVersionNotSupportedException)
-            {
-                throw;
-            }
-            catch
-            {
-                return null;
-            }
-            finally
-            {
-                stream.Close();
-            }
-
-#endif
-            document.name = Path.GetFileNameWithoutExtension(file);
-            return document;
         }
 
         /// <summary>
@@ -882,7 +857,7 @@ namespace netDxf
         /// <exception cref="DxfVersionNotSupportedException"></exception>
         /// <remarks>
         /// Loading DXF files prior to AutoCad 2000 is not supported.<br />
-        /// On Debug mode it will raise any exception that might occur during the whole process.<br />
+        /// Errors are reported through exceptions. <br />
         /// The caller will be responsible of closing the stream.
         /// </remarks>
         public static DxfDocument Load(Stream stream)
@@ -899,31 +874,13 @@ namespace netDxf
         /// <exception cref="DxfVersionNotSupportedException"></exception>
         /// <remarks>
         /// Loading DXF files prior to AutoCad 2000 is not supported.<br />
-        /// On Debug mode it will raise any exception that might occur during the whole process.<br />
+        /// Errors are reported through exceptions. <br />
         /// The caller will be responsible of closing the stream.
         /// </remarks>
         public static DxfDocument Load(Stream stream, IEnumerable<string> supportFolders)
         {
             DxfReader dxfReader = new DxfReader();
-
-#if DEBUG
             DxfDocument document = dxfReader.Read(stream, supportFolders);
-#else
-            DxfDocument document;
-            try
-            {
-                 document = dxfReader.Read(stream, supportFolders);
-            }
-            catch (DxfVersionNotSupportedException)
-            {
-                throw;
-            }
-            catch
-            {
-                return null;
-            }
-
-#endif
             return document;
         }
 
@@ -952,8 +909,7 @@ namespace netDxf
         /// <exception cref="DxfVersionNotSupportedException"></exception>
         /// <remarks>
         /// If the file already exists it will be overwritten.<br />
-        /// The Save method will still raise an exception if they are unable to create the FileStream.<br />
-        /// On Debug mode they will raise any exception that might occur during the whole process.
+        /// Errors are reported through exceptions. <br />
         /// </remarks>
         public bool Save(string file, bool isBinary)
         {
@@ -961,31 +917,10 @@ namespace netDxf
             this.name = Path.GetFileNameWithoutExtension(fileInfo.FullName);
 
             DxfWriter dxfWriter = new DxfWriter();
-
-            Stream stream = File.Create(file);
-
-#if DEBUG
-            dxfWriter.Write(stream, this, isBinary);
-            stream.Close();
-#else
-            try
+            using (var stream = File.Create(file))
             {
                 dxfWriter.Write(stream, this, isBinary);
             }
-            catch (DxfVersionNotSupportedException)
-            {
-                throw;
-            }
-            catch
-            {
-                return false;
-            }
-            finally
-            {
-                stream.Close();
-            }
-                
-#endif
             return true;
         }
 
@@ -1018,24 +953,7 @@ namespace netDxf
         public bool Save(Stream stream, bool isBinary)
         {
             DxfWriter dxfWriter = new DxfWriter();
-
-#if DEBUG
             dxfWriter.Write(stream, this, isBinary);
-#else
-            try
-            {
-                dxfWriter.Write(stream, this, isBinary);
-            }
-            catch (DxfVersionNotSupportedException)
-            {
-                throw;
-            }
-            catch
-            {
-                return false;
-            }
-                
-#endif
             return true;
         }
 
